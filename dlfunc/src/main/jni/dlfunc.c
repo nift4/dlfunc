@@ -139,7 +139,7 @@ int dlfunc_init(JNIEnv* env) {
     if(!jniHelper || !jniCall) {
         jclass localClass = findHelperClass(env);
         if (localClass == NULL) {
-            LOGE("cannot find class dlfunc");
+            LOGE("cannot find class %s", CLASS_NAME);
             (*env)->ExceptionClear(env);
             return JNI_ERR;
         }
