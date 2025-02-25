@@ -5,13 +5,14 @@ plugins {
 import java.nio.file.Paths
 
 android {
-    compileSdkVersion 28
+    compileSdk 35
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
+        namespace "lab.galaxy.dlfunc"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -34,7 +35,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     ndkVersion '22.1.7171670'
-    buildToolsVersion '29.0.2'
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'
@@ -58,7 +58,7 @@ afterEvaluate {
     def d8_path = file(Paths.get(android.properties.get("sdkDirectory").absolutePath,
             "build-tools", android.buildToolsRevision.toString(), "d8")).absolutePath
 
-    android.libraryVariants.all { variant ->
+    android.libraryVariants.configureEach { variant ->
         def buildType
         def d8_flag
         switch (variant.buildType.name) {
@@ -78,27 +78,48 @@ afterEvaluate {
         def generateDexTask = tasks.register("generateDex${buildType}") {
             dependsOn "compile${buildType}JavaWithJavac"
             doLast {
+                def f = new File(tasks.named("compile${buildType}JavaWithJavac").get().destinationDir.parent, "classes32")
+                f.mkdir()
                 exec {
                     executable d8_path
                     args file(new File(
                             tasks.named("compile${buildType}JavaWithJavac").get().destinationDir,
-                            "lab/galaxy/dlfunc/JNIHelper.class")).absolutePath,
-                            d8_flag
+                            "dlfunc32.class")).absolutePath,
+                            d8_flag, "--output", f.absolutePath
+                }
+                def f2 = new File(f.parent, "classes64")
+                f2.mkdir()
+                exec {
+                    executable d8_path
+                    args file(new File(
+                            tasks.named("compile${buildType}JavaWithJavac").get().destinationDir,
+                            "dlfunc64.class")).absolutePath,
+                            d8_flag, "--output", f2.absolutePath
                 }
                 exec {
                     // generate header for the dex file content
                     executable "xxd"
-                    args "-i", "classes.dex", "src/main/jni/JNIHelper_dex.h"
+                    args "-i", "-n", "classes_dex", "${f.absolutePath}/classes.dex", "src/main/jni/JNIHelper_dex32.h"
+                }
+                exec {
+                    // generate header for the dex file content
+                    executable "xxd"
+                    args "-i", "-n", "classes_dex", "${f2.absolutePath}/classes.dex", "src/main/jni/JNIHelper_dex64.h"
                 }
             }
         }
-        tasks.named("externalNativeBuild${buildType}").get().dependsOn(generateDexTask)
+        //tasks.named("externalNativeBuild${buildType}").get().dependsOn(generateDexTask)
+        if (buildType.toString() == "Release")
+            tasks.configureEach {
+                if (it.name.startsWith("buildCMakeRel"))
+                    it.dependsOn(generateDexTask)
+            }
     }
 }
 
 
 dependencies {
-    testImplementation 'junit:junit:4.+'
+    /*testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'*/
 }

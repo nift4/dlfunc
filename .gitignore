@@ -16,3 +16,8 @@ local.properties
 *.swp
 *.aar
 .idea/
+
+dlfunc/classes32.dex
+dlfunc/classes64.dex
+JNIHelper_dex32.h
+JNIHelper_dex64.h
