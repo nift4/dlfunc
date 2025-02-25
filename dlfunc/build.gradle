@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.library'
+    id 'signing'
+    id "com.vanniktech.maven.publish" version "0.30.0"
 }
 
 import java.nio.file.Paths
@@ -122,4 +124,50 @@ dependencies {
     /*testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'*/
+}
+
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+import com.vanniktech.maven.publish.SonatypeHost
+
+
+signing {
+    useGpgCmd()
+}
+
+
+mavenPublishing {
+    // the first parameter represents which variant is published
+    // the second whether to publish a sources jar
+    // the third whether to publish a javadoc jar
+    android.libraryVariants.configureEach { println it }
+    configure(new AndroidSingleVariantLibrary("release", true, true))
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+    coordinates("io.github.nift4.dlfunc", "dlfunc", "0.1.2")
+
+    pom {
+        name = "dlfunc"
+        description = " Bypass dynamic linking function restriction on Android by forging caller address (based on dlfunc by rk700)"
+        inceptionYear = "2025"
+        url = "https://github.com/nift4/dlfunc/"
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+        developers {
+            developer {
+                id = "nift4"
+                name = "Nick"
+                url = "https://github.com/nift4/"
+            }
+        }
+        scm {
+            url = "https://github.com/nift4/dlfunc"
+            connection = "scm:git:https://github.com/nift4/dlfunc.git"
+            developerConnection = "scm:git:ssh://git@github.com/nift4/dlfunc.git"
+        }
+    }
 }
