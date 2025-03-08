@@ -3,6 +3,7 @@
 # your build.
 
 cmake_minimum_required(VERSION 3.4.1)
+project(dlfunc)
 
 # Specifies a library name, specifies whether the library is STATIC or
 # SHARED, and provides relative paths to the source code. You can
@@ -34,3 +35,14 @@ target_link_libraries( # Specifies the target library.
         # Links the log library to the target library.
         ${log-lib} )
 
+if(ANDROID AND ANDROID_ABI MATCHES "arm64-v8a")
+	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -fPIC -fomit-frame-pointer)
+else()
+	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -fPIC -fomit-frame-pointer -Oz)
+endif()
+
+add_custom_command(TARGET dlfunc
+		POST_BUILD
+		COMMAND ${CMAKE_OBJCOPY} --remove-section .comment --remove-section .note.gnu.build-id $<TARGET_FILE:dlfunc>
+		VERBATIM
+)

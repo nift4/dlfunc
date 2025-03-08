@@ -16,7 +16,6 @@ android {
         versionName "1.0"
         namespace "lab.galaxy.dlfunc"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
         externalNativeBuild {
@@ -143,7 +142,7 @@ mavenPublishing {
     configure(new AndroidSingleVariantLibrary("release", true, true))
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
-    coordinates("io.github.nift4.dlfunc", "dlfunc", "0.1.3")
+    coordinates("io.github.nift4.dlfunc", "dlfunc", "0.1.4")
 
     pom {
         name = "dlfunc"

@@ -60,24 +60,7 @@ __asm__(
 #error "Unsupported architecture"
 #endif
 
-void *dlfunc_dlopen(JNIEnv *env, const char *filename, int flags) {
-    void *handle = NULL;
-    if (!jniHelper || !jniCall) {
-        LOGE("env not setup, call dlfunc_init");
-        return handle;
-    }
-
-#if defined(is32Bit)
-    handle = (void *) (*env)->CallStaticIntMethod(env, jniHelper, jniCall, (int) dlopen,
-                                                  (int) filename, (int) flags);
-#else
-    handle = (void *) (*env)->CallStaticLongMethod(env, jniHelper, jniCall, (long)dlopen,
-												   (long)filename, (long)flags);
-#endif
-    return handle;
-}
-
-void *dlfunc_dlsym(JNIEnv *env, void *handle, const char *symbol) {
+void *dlfunc_do(JNIEnv *env, uintptr_t func, uintptr_t handle, uintptr_t symbol) {
     void *ptr = NULL;
     if(!jniHelper || !jniCall) {
         LOGE("env not setup, call dlfunc_init");
@@ -85,11 +68,11 @@ void *dlfunc_dlsym(JNIEnv *env, void *handle, const char *symbol) {
     }
 
 #if defined(is32Bit)
-    ptr = (void *) (*env)->CallStaticIntMethod(env, jniHelper, jniCall, (int) dlsym, (int) handle,
-                                               (int) symbol);
+    ptr = (void *) (*env)->CallStaticIntMethod(env, jniHelper, jniCall, func, handle,
+                                               symbol);
 #else
-    ptr = (void *) (*env)->CallStaticLongMethod(env, jniHelper, jniCall, (long)dlsym, (long)handle,
-												(long)symbol);
+    ptr = (void *) (*env)->CallStaticLongMethod(env, jniHelper, jniCall, func, handle,
+												symbol);
 #endif
     return ptr;
 }
