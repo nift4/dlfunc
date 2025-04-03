@@ -31,11 +31,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packaging {
+        dex {
+            useLegacyPackaging = false
+        }
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    ndkVersion '22.1.7171670'
+    ndkVersion '27.2.12479018'
     externalNativeBuild {
         cmake {
             path 'CMakeLists.txt'
@@ -142,7 +150,7 @@ mavenPublishing {
     configure(new AndroidSingleVariantLibrary("release", true, true))
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
-    coordinates("io.github.nift4.dlfunc", "dlfunc", "0.1.5")
+    coordinates("io.github.nift4.dlfunc", "dlfunc", "0.1.6")
 
     pom {
         name = "dlfunc"
