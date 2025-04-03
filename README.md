@@ -1,9 +1,6 @@
 dlfunc
 ----------------
 
-[![Build Status](https://github.com/rk700/dlfunc/workflows/Android%20CI/badge.svg)](https://github.com/rk700/dlfunc/actions)
-[![Maven](https://badgen.net/maven/v/metadata-url/https/dl.bintray.com/rk700/maven/io/github/rk700/dlfunc/maven-metadata.xml)](https://dl.bintray.com/rk700/maven/io/github/rk700/dlfunc/)
-
 ## Introduction
 
 Dynamic linking functions(`dlopen`, `dlsym`) in recent Android versions are restricted with caller address checked. This project can be used as a workaround by forging caller address. 
@@ -20,7 +17,7 @@ The library is built with the new feature of Android Gradle Plugin for [native c
 To use the library, first make sure that Android Gradle Plugin version 4.0+ is used. Then add the library as a dependency:
 
 ```
-implementation 'io.github.nift4.dlfunc:dlfunc:0.1.4'
+implementation 'io.github.nift4.dlfunc:dlfunc:0.1.5'
 ```
 
 Put the following lines into the android block of the module's `build.gradle` file to enable prefab:

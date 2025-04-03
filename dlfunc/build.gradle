@@ -20,7 +20,7 @@ android {
 
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_STL=none"
+                arguments "-DANDROID_STL=none", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
             }
         }
     }
@@ -142,7 +142,7 @@ mavenPublishing {
     configure(new AndroidSingleVariantLibrary("release", true, true))
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
-    coordinates("io.github.nift4.dlfunc", "dlfunc", "0.1.4")
+    coordinates("io.github.nift4.dlfunc", "dlfunc", "0.1.5")
 
     pom {
         name = "dlfunc"
